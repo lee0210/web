@@ -1,0 +1,32 @@
+@extend('LeeYR')
+
+@fill('title', 'Catch My Heart')
+
+@fill('css')
+<style>
+</style>
+@endfill
+
+@fill('script')
+<script>
+$(document).ready(function(){
+    var ws = new WebSocket("ws://120.24.174.183/websocket/game01");
+    ws.onopen = function(e){
+        ws.send('start to fuck you');
+    };
+    ws.onmessage = function(e){
+        $('#message').append('recieved:'+e.data);
+    };
+
+    $('#click').click(function(){
+        ws.send('fuck you');
+    });
+});
+</script>
+@endfill
+
+@fill('content')
+<div id='message'></div>
+<button id='click'>Test</button>
+
+@endfill

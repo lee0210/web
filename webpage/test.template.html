@@ -1,0 +1,127 @@
+@extend('LeeYR')
+
+@fill('title', 'Upload File')
+
+@fill('css')
+<style>
+.tmp_img{
+  display: inline-block;
+  width: 50px;
+  height: 50px;
+}
+</style>
+@endfill
+
+@fill('script')
+<script>
+var upload_image;
+$(document).ready(function(){
+    var ps = 0;
+    function l_onprogress(event){
+        var cps = event.loaded/event.total*100;
+        ps = cps > ps ? cps : ps;
+        str_ps = ps.toFixed(2)+'%';
+        $('#lee_id_upload_status').html(str_ps);
+        $('#upload_status').css('width', str_ps);
+    }
+
+   upload_image = function(d){
+        ps = 0;
+        $.ajax({
+            url: '/action/upload',
+            type: "POST",
+            data: d,
+            processData: false,
+            contentType: false,
+            success: function(data, status){
+                $('#alert01').find('.alertbox_content').html(data);
+                $('#alert01').show();
+            },
+            xhr: function(){
+                var xhr = $.ajaxSettings.xhr();
+                if(onprogress && xhr.upload) {
+                    xhr.upload.addEventListener("progress" , l_onprogress, false);
+                    xhr.upload.l_progress_target = '#upload_status';
+                    return xhr;
+                }
+            } 
+        });
+    }
+
+
+    $("#upload").click(function(){
+        ps = 0;
+        $.ajax({
+            url: '/action/upload',
+            type: "POST",
+            data: new FormData($('#lee_id_file_form')[0]),
+            processData: false,
+            contentType: false,
+            success: function(data, status){
+                $('#alert01').find('.alertbox_content').html(data);
+                $('#alert01').show();
+            },
+            xhr: function(){
+                var xhr = $.ajaxSettings.xhr();
+                if(onprogress && xhr.upload) {
+                    xhr.upload.addEventListener("progress" , l_onprogress, false);
+                    xhr.upload.l_progress_target = '#upload_status';
+                    return xhr;
+                }
+            } 
+        });
+    });
+
+    $('#test').click(function(){
+        $.each($('[name="img"]')[0].files, function(i, v, a){
+            url = window.URL.createObjectURL(v);
+            $('#img_box').append('<img src="'+url+'" class="tmp_img"/>');
+        });
+    });
+    
+    $('#testpostjson').click(function(){
+        var d = {'a': ['1','2','3'], 'b': 'dafdsfdasf'};
+        $.ajax({
+            url: '/action/testpostjson',
+            type: "POST",
+            data: JSON.stringify(d),
+            processData: false,
+            contentType: 'application/json',
+            success: function(d, s){
+                $('#alert01').find('.alertbox_content').html(d);
+                $('#alert01').show();
+            },
+        });
+       
+    });
+});
+
+</script>
+@endfill
+
+@fill('content')
+
+<div id='img_box'></div>
+<input type='text' id='path'>
+<button id='test'>Test Small Image</button>
+<button id='testpostjson'>Test Post JSON</button>
+<button id='testalertbox' type='toggle' toggle-target='#alert01'>Test Alert Box</button>
+
+<form id='lee_id_file_form' class="form-horizontal" role="form">
+    <input type="file" name="img" multiple='multiple' class='form-control' accept='image/jpeg'>	
+</form>  
+<button id='upload'>上传</button>
+<div style='border:solid; font-size:30px;' id='lee_id_upload_status'>0.00%</div>
+<div style='background-color:white; border:solid; height:30px;'><div id='upload_status' style='background-color:black; height:100%; width:0%'></div></div>
+
+<div id='alert01' class='masker' style='position:absolute; top:0; left:0; z-index:1; width:100%; height:100%; display:none;'>
+<div class='alertbox' style='position: absolute;top: 40%; left: 15%; width: 70%; border:solid;'>
+  <div class='alertbox_content' style='margin: 10px;'>Alert Test</div>
+  <div style='clear:both; border:solid 1px;'></div>
+  <div><button style='width:100%; font-size:15px;' type='toggle' toggle-target='#alert01'>OK</button></div>
+</div>
+</div>
+
+<iframe src='/editor'></iframe>
+
+@endfill

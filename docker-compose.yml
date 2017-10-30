@@ -1,0 +1,16 @@
+version: '3'
+services:
+  web:
+    image: 'locode/dev:3.6.1'
+    volumes: 
+     - /workspace/web:/app 
+     - /dev/shm:/dev/shm 
+     - /data:/data
+    command: uwsgi web.ini
+    container_name: web
+    network_mode: 'host'
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+

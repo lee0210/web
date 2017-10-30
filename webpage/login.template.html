@@ -1,0 +1,51 @@
+@extend('LeeYR')
+
+@fill('title', 'Login')
+
+@fill('css')
+<link rel="stylesheet/less" media="screen and (max-width: 1200px)" href="m/login.less">
+<link rel="stylesheet/less" media="screen and (min-width: 1200px)" href="n/login.less">
+<style>
+nar_bar{
+  position: fixed;
+  top: 0;
+}
+footer{
+  position: fixed;
+  bottom: 10px;
+}
+</style>
+@endfill
+
+@fill('script')
+<script>
+$(document).ready(function(){
+    $("#submit").click(function(){
+        ps = 0;
+        $.ajax({
+            url: '/action/login',
+            type: "POST",
+            data: new FormData($('#login_form')[0]),
+            processData: false,
+            contentType: false,
+            success: function(d, s){
+                if(d['rt'] == '1'){
+                    alert('login failed');
+                }
+                if(d['rt'] == '0'){
+                    window.location="/index";
+                }
+            }
+        });
+    });
+});
+</script>
+@endfill
+
+@fill('content')
+<form id='login_form' role='form'>
+    <input type='text' name='user' placeholder='Profile'>	
+    <input type='text' name='captcha' placeholder='Password'>
+</form>  
+<button class='btn_login' id='submit'>Login</button>
+@endfill

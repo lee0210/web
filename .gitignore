@@ -1,0 +1,6 @@
+locode/dbconf.py
+*.swp
+*.pyc
+*.log
+fonts/*
+sendmail.py

@@ -1,0 +1,54 @@
+@extend('LeeYR')
+
+@fill('title', 'Upload File')
+
+@fill('css')
+@endfill
+
+@fill('script')
+<script>
+var upload_image;
+var l_onprogress;
+$(document).ready(function(){
+    var ps = 0;
+    l_onprogress = function(event){
+        var cps = event.loaded/event.total*100;
+        ps = cps > ps ? cps : ps;
+        str_ps = ps.toFixed(2)+'%';
+        $('#upload_status').css('width', str_ps);
+    }
+
+    upload_image = function(formData){
+        ps = 0;
+        $.ajax({
+            url: '/action/upload',
+            type: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(data, status){
+                alert(data);
+            },
+            xhr: function(){
+                var xhr = $.ajaxSettings.xhr();
+                if(l_onprogress && xhr.upload) {
+                    xhr.upload.addEventListener("progress" , l_onprogress, false);
+                    xhr.upload.l_progress_target = '#upload_status';
+                    return xhr;
+                }
+            }
+        });
+    }
+    
+});
+
+</script>
+@endfill
+
+@fill('content')
+
+<div style='background-color:white; border:solid; height:30px;'><div id='upload_status' style='background-color:black; height:100%; width:0%'></div></div>
+
+<iframe src='/editor'></iframe>
+
+@endfill
